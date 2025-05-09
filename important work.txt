@@ -1,0 +1,17 @@
+authentication
+user feed
+profile picture
+logout // partially done will be done after adding frontend //
+account deletion // this successfull but we will add email sent that account deleted successfully //
+google auth
+google maps
+forgot password reset otp through
+activity log user ko option de dein ge ke bhai teri sari recent history of usage hmare pass hai (pdf generation)
+after signup send email that user is successfully registered
+dynamic chart addition 
+
+advance = 
+
+file upload
+search
+

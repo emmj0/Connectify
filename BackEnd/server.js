@@ -6,6 +6,13 @@ const userRoutes = require('./Routes/UserRoutes');
 const path = require('path');
 
 const app = express();
+// server.js or index.js in backend
+const cors = require('cors');
+app.use(cors({
+    origin: 'http://localhost:5173', // Replace with frontend origin
+    credentials: true
+  }));
+
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());

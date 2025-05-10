@@ -1,53 +1,33 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import api from '../services/api';
+import { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const login = async (email, password) => {
-    try {
-      const response = await api.post('/auth/login', { email, password });
-      setUser(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+    localStorage.setItem('token', res.data.token);
+    localStorage.setItem('user', JSON.stringify(res.data.user)); // ✅ persist user
+    setUser(res.data.user);
   };
 
   const register = async (name, username, email, password) => {
-    try {
-      const response = await api.post('/auth/register', { name, username, email, password });
-      setUser(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+    await axios.post('http://localhost:5000/api/auth/register', { name, username, email, password });
   };
 
-  const logout = async () => {
-    try {
-      await api.post('/auth/logout');
-      setUser(null);
-    } catch (error) {
-      console.error(error);
-    }
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user'); 
+    setUser(null);
   };
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await api.get('/auth/check');
-        setUser(response.data);
-      } catch (error) {
-        setUser(null);
-      }
-    };
-
-    checkAuth();
-  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

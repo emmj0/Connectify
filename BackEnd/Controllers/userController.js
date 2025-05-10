@@ -15,9 +15,47 @@ exports.getUser = async (req, res) => {
     }
 };
 
+// exports.updateUser = async (req, res) => {
+//     try {
+//         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+//         res.status(200).json(updatedUser);
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
+
+// Controllers/userController.js
+// const User = require('../Models/userModel');
+// const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+
 exports.updateUser = async (req, res) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        console.log('req.file:', req.file);
+        console.log('req.body:', req.body);
+        const userId = req.params.id;
+
+        // Check if a profile picture is uploaded
+        let profilePicturePath = null;
+        if (req.file) {
+            profilePicturePath = req.file.path;
+        }
+
+        // Prepare the update object
+        const updateData = {};
+        if (req.body.username) updateData.username = req.body.username;
+        if (req.body.email) updateData.email = req.body.email;
+        if (profilePicturePath) updateData.profilePicture = profilePicturePath;
+
+        // Update the user
+        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Send a success response with the updated user data
         res.status(200).json(updatedUser);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -54,6 +92,29 @@ exports.createPost = async (req, res) => {
     }
 };
 
+// Controller
+exports.getFeedPosts = async (req, res) => {
+    try {
+    console.log("User ID:", req.params.id);
+    console.log("Request Body:", req.body);
+      const user = await User.findById(req.params.id).populate('following');
+      console.log("User:", user);
+      const followingIds = user.following.map(f => f._id);
+      console.log("Following IDs:", followingIds);
+  
+      const posts = await Post.find({ user: { $in: followingIds } })
+        .sort({ createdAt: -1 })
+        .populate('user')
+        .populate('comments.user')
+        .populate('likes');
+  
+      res.status(200).json(posts);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
+
+  
 exports.getPost = async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId)
@@ -158,7 +219,7 @@ exports.likePost = async (req, res) => {
             return res.status(404).json({ error: "Post not found" });
         }
 
-        const userId = req.body.userId; 
+        const userId = req.params.userId; 
         if (!post.likes.includes(userId)) {
             post.likes.push(userId);
             await post.save();

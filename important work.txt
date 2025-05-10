@@ -1,8 +1,8 @@
-authentication
-user feed
-profile picture
+authentication done
+user feed  done like or comment ka issue a ra
+profile picture ez scn
 logout // partially done will be done after adding frontend //
-account deletion // this successfull but we will add email sent that account deleted successfully //
+account deletion // this successfull but we will add email sent that account deleted successfully // left
 google auth
 google maps
 forgot password reset otp through
@@ -12,6 +12,6 @@ dynamic chart addition
 
 advance = 
 
-file upload
-search
+file upload done        
+search done
 

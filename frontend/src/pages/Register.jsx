@@ -7,18 +7,21 @@ const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
   const { register } = useAuth();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await register(name, username, email, password);
-      navigate('/login');
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  e.preventDefault();
+  try {
+    await register(name, username, email, password);
+    console.log('Registration successful');
+    console.log('User:', { name, username, email, password });
+    navigate('/login');
+  } catch (error) {
+    setErrorMsg(error.message);
+  }
+};
 
   return (
     <div>

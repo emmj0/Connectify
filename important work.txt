@@ -1,7 +1,11 @@
+logout 
+profile picture ez scn 
 authentication done
-user feed  done like or comment ka issue a ra
-profile picture ez scn
-logout // partially done will be done after adding frontend //
+
+==================================================================================================
+aik frontend page jisse login signup accessible history
+user feed  done like or comment ka issue a ra ---
+
 account deletion // this successfull but we will add email sent that account deleted successfully // left
 google auth
 google maps

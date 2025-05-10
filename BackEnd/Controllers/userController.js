@@ -105,7 +105,7 @@ exports.getFeedPosts = async (req, res) => {
       const posts = await Post.find({ user: { $in: followingIds } })
         .sort({ createdAt: -1 })
         .populate('user')
-        .populate('comments.user')
+        .populate('comments.user' , 'username')
         .populate('likes');
   
       res.status(200).json(posts);
@@ -214,6 +214,7 @@ exports.deletePost = async (req, res) => {
 
 exports.likePost = async (req, res) => {
     try {
+        console.log("Like Post Request Body:", req.body);
         const post = await Post.findById(req.params.postId); 
         if (!post) {
             return res.status(404).json({ error: "Post not found" });
@@ -230,6 +231,29 @@ exports.likePost = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.unlikePost = async (req, res) => {
+    try {
+        console.log("unLike Post Request Body:", req.body);
+        const post = await Post.findById(req.params.postId); 
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
+        }
+
+        const userId = req.params.userId;
+
+        // ✅ Remove userId from the likes array if it exists
+        if (post.likes.includes(userId)) {
+            post.likes = post.likes.filter(id => id.toString() !== userId);
+            await post.save();
+        }
+
+        res.status(200).json({ message: "Post unliked", post });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 
 // In userController.js
@@ -299,7 +323,12 @@ exports.unfollowUser = async (req, res) => {
 
 exports.commentOnPost = async (req, res) => {
     try {
-        const { text, userId } = req.body; 
+        const { text } = req.body; 
+        const userId = req.params.userId;
+
+        console.log("Comment Request Body:", req.body);
+        console.log("User ID:", userId);
+
         const post = await Post.findById(req.params.postId);
         if (!post) {
             return res.status(404).json({ error: "Post not found" });
@@ -314,8 +343,15 @@ exports.commentOnPost = async (req, res) => {
         post.comments.push(newComment);
         await post.save();
 
-        res.status(200).json({ message: "Comment added", post });
+        // ✅ Re-fetch to get fully populated post including the new comment's user
+        const updatedPost = await Post.findById(post._id)
+            .populate('user', 'username profilePicture')
+            .populate('comments.user', 'username')
+            .populate('likes');
+
+        res.status(200).json({ message: "Comment added", post: updatedPost });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+

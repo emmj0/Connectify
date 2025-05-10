@@ -1,60 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useParams } from 'react-router-dom';
+import PostCard from '../components/PostCard';
 
 const UserProfile = () => {
   const [userData, setUserData] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [viewerId, setViewerId] = useState(null);
-  const { id: profileId } = useParams(); // ID of profile being viewed
+  const { id: profileId } = useParams();
 
-  // Decode the token to get viewer ID
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      const decoded = JSON.parse(atob(token.split('.')[1])); // Assuming JWT token
+      const decoded = JSON.parse(atob(token.split('.')[1]));
       setViewerId(decoded.id);
     }
   }, []);
 
-  // Fetch the profile
+  const fetchUser = async () => {
+    try {
+      const response = await api.get(`/users/${profileId}`);
+      setUserData(response.data);
+      setIsFollowing(response.data.followers.some(f => f._id === viewerId));
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.status === 404 ? 'User not found' : 'An error occurred.');
+    }
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const decoded = JSON.parse(atob(token.split('.')[1])); // Assuming JWT token
-    const viewer = decoded.id;
-    setViewerId(viewer);
-  
-    const fetchUser = async () => {
-      try {
-        console.log('Fetching user data for profile ID:', profileId);
-        const response = await api.get(`/users/${profileId}`);
-        console.log('User data fetched:', response.data);
-        console.log('Viewer ID:', viewer);
-        console.log('User followers:', response.data.followers);
-  
-        setUserData(response.data);
-        setIsFollowing(response.data.followers.some(f => f._id === viewer));
-        console.log('Is viewer following:', response.data.followers.some(f => f._id === viewer));
-      } catch (error) {
-        console.error(error);
-        if (error.response && error.response.status === 404) {
-          alert('User not found');
-        } else {
-          alert('An error occurred. Please try again later.');
-        }
-      }
-    };
-  
-    if (profileId) {
+    if (profileId && viewerId) {
       fetchUser();
     }
-  }, [profileId]);
-  
+  }, [profileId, viewerId]);
+
   const handleFollow = async () => {
     try {
       await api.put(`/users/${userData._id}/follow`, { userId: viewerId });
-      setIsFollowing(true);
-      alert('Followed successfully');
+      fetchUser();
     } catch (error) {
       console.error(error);
     }
@@ -63,8 +46,7 @@ const UserProfile = () => {
   const handleUnfollow = async () => {
     try {
       await api.put(`/users/${userData._id}/unfollow`, { userId: viewerId });
-      setIsFollowing(false);
-      alert('Unfollowed successfully');
+      fetchUser();
     } catch (error) {
       console.error(error);
     }
@@ -92,7 +74,7 @@ const UserProfile = () => {
           {viewerId && viewerId !== userData._id && (
             <button
               onClick={isFollowing ? handleUnfollow : handleFollow}
-              className={`bg-${isFollowing ? 'red' : 'blue'}-500 hover:bg-${isFollowing ? 'red' : 'blue'}-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+              className={`bg-${isFollowing ? 'red' : 'blue'}-500 hover:bg-${isFollowing ? 'red' : 'blue'}-700 text-white font-bold py-2 px-4 rounded`}
             >
               {isFollowing ? 'Unfollow' : 'Follow'}
             </button>
@@ -102,12 +84,14 @@ const UserProfile = () => {
         <div className="mt-4">
           <h3 className="text-xl font-bold">Posts</h3>
           <div className="grid grid-cols-3 gap-4 mt-2">
-            {userData.posts.length ? (
+            {userData.posts.length > 0 ? (
               userData.posts.map((post) => (
-                <div key={post._id} className="bg-gray-100 rounded-lg p-2">
-                  <img src={post.media ? `http://localhost:5000/${post.media}` : 'https://via.placeholder.com/100'} alt={post.description} className="w-full h-40 object-cover rounded-lg" />
-                  <p className="text-gray-700 mt-2">{post.description}</p>
-                </div>
+                <PostCard
+                  key={post._id}
+                  post={post}
+                  viewerId={viewerId}
+                  onPostUpdated={fetchUser}
+                />
               ))
             ) : (
               <p className="text-gray-500">No posts yet.</p>

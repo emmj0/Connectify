@@ -22,6 +22,7 @@
           console.error('User ID is not available');
           return;
         }
+        console.log('Fetching feed for user ID:', userId);
         const res = await axios.get(`http://localhost:5000/api/users/${userId}/feed/posts`);
         console.log('Feed response:', res.data);
         // If response is like { posts: [...] }, access res.data.posts
@@ -73,17 +74,6 @@
               </button>
             </div>
 
-            {/* New Features Box */}
-            <div className="mx-auto max-w-3xl mb-12">
-              <div className="bg-white shadow-xl rounded-2xl p-8 border border-gray-200 transition duration-300 hover:shadow-2xl">
-                <h2 className="text-2xl font-semibold text-gray-700 mb-4">New Features</h2>
-                <ul className="list-disc pl-5 text-gray-600 space-y-2 text-left">
-                  <li>Beautiful UI inspired by Instagram</li>
-                  <li>Fast feed updates</li>
-                  <li>Follow and interact with your friends</li>
-                </ul>
-              </div>
-            </div>
 
             {/* Post Feed */}
             <div className="max-w-3xl mx-auto space-y-8">
@@ -91,7 +81,7 @@
                 <p className="text-gray-500 text-center">No posts yet. Follow others or create a post!</p>
               ) : (
                 posts.map((post) => (
-                  <PostCard key={post._id} post={post} onPostUpdated={fetchFeed} />
+                  <PostCard key={post._id} post={post} viewerId={userId} onPostUpdated={fetchFeed} />
                 ))
               )}
             </div>

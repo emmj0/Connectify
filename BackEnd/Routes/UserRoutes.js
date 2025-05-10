@@ -17,6 +17,7 @@ router.get('/:id/feed/posts',  userController.getFeedPosts);
 router.put('/:id/posts/:postId/update',upload.none(), userController.updatePost);
 router.delete('/:id/posts/:postId/delete', userController.deletePost);
 router.post('/:id/posts/:postId/like', userController.likePost);
+router.post('/:id/posts/:postId/unlike', userController.unlikePost);
 router.post('/:id/posts/:postId/comment', userController.commentOnPost);
 router.put('/:id/follow', userController.followUser);
 router.put('/:id/unfollow', userController.unfollowUser);

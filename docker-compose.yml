@@ -2,57 +2,74 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "5173:5173" # or whatever port your frontend runs on
+      - "5173:5173"
     networks:
       - connectify-net
     depends_on:
       - user-service
       - admin-service
       - auth-service
+    restart: unless-stopped
 
   user-service:
     build: ./User-Service
+    environment:
+      - PORT=5001
+      - MONGO_URI=mongodb://mongo:27017/connectify
     ports:
       - "5001:5001"
     networks:
       - connectify-net
     depends_on:
       - mongo
-      - redis
+    restart: unless-stopped
 
   admin-service:
     build: ./Admin-Service
+    environment:
+      - PORT=5003
+      - MONGO_URI=mongodb://mongo:27017/connectify
+      - JWT_SECRET=change_me_for_local_dev
     ports:
       - "5003:5003"
     networks:
       - connectify-net
     depends_on:
       - mongo
+    restart: unless-stopped
 
   auth-service:
     build: ./Auth-Service
+    environment:
+      - PORT=5002
+      - MONGO_URI=mongodb://mongo:27017/connectify
+      - JWT_SECRET=change_me_for_local_dev
+      - EMAIL=change_me@example.com
+      - PASS=change_me_app_password
     ports:
       - "5002:5002"
     networks:
       - connectify-net
     depends_on:
       - mongo
-      - redis
+    restart: unless-stopped
 
   mongo:
     image: mongo
+    container_name: connectify-mongo
+    environment:
+      - MONGO_INITDB_DATABASE=connectify
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
     networks:
       - connectify-net
-
-  redis:
-    image: redis
-    ports:
-      - "6379:6379"
-    networks:
-      - connectify-net
+    restart: unless-stopped
 
 networks:
   connectify-net:
     driver: bridge
+
+volumes:
+  mongo_data:

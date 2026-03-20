@@ -8,7 +8,7 @@ const UserActivityChart = () => {
     useEffect(() => {
         const fetchActivityData = async () => {
             try {
-                const res = await axios.get('http://admin-service:5003/api/admin/activity-summary');
+                const res = await axios.get('http://localhost:5003/api/admin/activity-summary');
                 // Map data to expected chart format
                 const chartData = res.data.map(entry => ({
                     date: entry._id,

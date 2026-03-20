@@ -23,7 +23,7 @@ const Home = () => {
         return;
       }
       console.log('Fetching feed for user ID:', userId);
-      const res = await axios.get(`http://user-service:5001/api/users/${userId}/feed/posts`);
+      const res = await axios.get(`http://localhost:5001/api/users/${userId}/feed/posts`);
       console.log('Feed response:', res.data);
       // If response is like { posts: [...] }, access res.data.posts
       const fetchedPosts = Array.isArray(res.data) ? res.data : res.data.posts;

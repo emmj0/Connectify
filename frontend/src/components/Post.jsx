@@ -12,7 +12,7 @@ const Post = ({ post }) => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://user-service:5001/api/users/${post.user}/posts/${post._id}`);
+        const response = await axios.get(`http://localhost:5001/api/users/${post.user}/posts/${post._id}`);
         setLikes(response.data.likes);
         setComments(response.data.comments);
       } catch (error) {
@@ -25,7 +25,7 @@ const Post = ({ post }) => {
 
   const handleLike = async () => {
     try {
-      await axios.post(`http://user-service:5001/api/users/${post.user}/posts/${post._id}/like`);
+      await axios.post(`http://localhost:5001/api/users/${post.user}/posts/${post._id}/like`);
       setLikes([...likes, { user: 'currentUserId' }]);
     } catch (error) {
       console.error(error);
@@ -35,7 +35,7 @@ const Post = ({ post }) => {
   const handleComment = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://user-service:5001/api/users/${post.user}/posts/${post._id}/comment`, { text: commentText });
+      await axios.post(`http://localhost:5001/api/users/${post.user}/posts/${post._id}/comment`, { text: commentText });
       setComments([...comments, { user: 'currentUserId', text: commentText }]);
       setCommentText('');
     } catch (error) {
@@ -46,7 +46,7 @@ const Post = ({ post }) => {
   const handleEdit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://user-service:5001/api/users/${post.user}/posts/${post._id}/update`, { description: editDescription });
+      await axios.put(`http://localhost:5001/api/users/${post.user}/posts/${post._id}/update`, { description: editDescription });
       setIsEditing(false);
     } catch (error) {
       console.error(error);
@@ -55,7 +55,7 @@ const Post = ({ post }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://user-service:5001/api/users/${post.user}/posts/${post._id}/delete`);
+      await axios.delete(`http://localhost:5001/api/users/${post.user}/posts/${post._id}/delete`);
       // Redirect or update the feed
     } catch (error) {
       console.error(error);

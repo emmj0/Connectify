@@ -21,7 +21,7 @@ const Header = () => {
         const userId = decoded.id;
         setUserId(userId);
 
-        fetch(`http://user-service:5001/api/users/${userId}`)
+        fetch(`http://localhost:5001/api/users/${userId}`)
           .then((res) => {
             if (!res.ok) throw new Error('Failed to fetch user data');
             return res.json();
@@ -55,7 +55,7 @@ const Header = () => {
       }
 
       try {
-        const response = await fetch(`http://user-service:5001/api/users/search/query?q=${query}`);
+        const response = await fetch(`http://localhost:5001/api/users/search/query?q=${query}`);
         const data = await response.json();
         setUsers(data);
       } catch (error) {
@@ -121,7 +121,7 @@ const Header = () => {
                     <div key={user._id} className="p-4 border-b border-gray-300 hover:bg-gray-100 cursor-pointer">
                       <Link to={`/profile/${user._id}`} className="flex items-center">
                         <img
-                          src={`http://localhost:5000/${user.profilePicture}`}
+                          src={`http://localhost:5001/${user.profilePicture}`}
                           alt={user.username}
                           className="w-10 h-10 rounded-full mr-4"
                         />
@@ -141,7 +141,7 @@ const Header = () => {
             <>
               <Link to={`/profile/${userId}`} title="View Profile">
                 <img
-                  src={profilePic ? `http://user-service:5001/${profilePic}` : '/default-profile.png'}
+                  src={profilePic ? `http://localhost:5001/${profilePic}` : '/default-profile.png'}
                   alt="Profile"
                   className="w-10 h-10 rounded-full object-cover border-2 border-white hover:ring-2 hover:ring-white transition"
                 />

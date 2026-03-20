@@ -23,7 +23,7 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post('http://auth-service:5002/api/auth/sendotp', { email });
+      const res = await axios.post('http://localhost:5002/api/auth/sendotp', { email });
       console.log(res.data);
       setOtpSent(true);
       setMessage(res.data.message);
@@ -44,7 +44,7 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post('http://auth-service:5002/api/auth/verifyotp', { email, otp });
+      const res = await axios.post('http://localhost:5002/api/auth/verifyotp', { email, otp });
       setOtpVerified(true);
       setMessage(res.data.message);
       setIsError(false);
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post('http://auth-service:5002/api/auth/resetpassword', {
+      const res = await axios.post('http://localhost:5002/api/auth/resetpassword', {
         email,
         otp,
         newPassword,

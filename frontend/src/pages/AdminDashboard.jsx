@@ -9,7 +9,7 @@ const AdminDashboard = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get('http://admin-service:5003/api/admin/users');
+            const res = await axios.get('http://localhost:5003/api/admin/users');
             setUsers(res.data);
             setShowUsers(true);
         } catch (err) {
@@ -27,7 +27,7 @@ const AdminDashboard = () => {
                         <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-6">Admin Dashboard</h1>
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
                             <a
-                                href="http://admin-service:5003/api/admin/activity-log/download"
+                                href="http://localhost:5003/api/admin/activity-log/download"
                                 className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 transition"
                                 target="_blank"
                                 rel="noopener noreferrer"

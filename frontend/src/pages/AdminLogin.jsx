@@ -14,7 +14,7 @@ const AdminLogin = () => {
         e.preventDefault();
         setError('');
         try {
-            const res = await axios.post('http://admin-service:5003/api/admin/login', {
+            const res = await axios.post('http://localhost:5003/api/admin/login', {
                 email,
                 password
             });

@@ -58,7 +58,7 @@ const CreatePost = () => {
         media,
         mentions: mentionList,
       });
-      await axios.post(`http://user-service:5001/api/users/${user.id}/posts`, formData, {
+      await axios.post(`http://localhost:5001/api/users/${user.id}/posts`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

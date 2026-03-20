@@ -15,7 +15,7 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`http://user-service:5001/api/users/${user.id}`);
+        const response = await axios.get(`http://localhost:5001/api/users/${user.id}`);
         setUsername(response.data.username);
         setEmail(response.data.email);
       } catch (error) {
@@ -40,7 +40,7 @@ const EditProfile = () => {
     }
 
     try {
-      const response = await axios.put(`http://user-service:5001/api/users/${user.id}`, formData, {
+      const response = await axios.put(`http://localhost:5001/api/users/${user.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -60,7 +60,7 @@ const EditProfile = () => {
   const handleDeleteAccount = async () => {
     if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
       try {
-        const response = await axios.delete('http://auth-service:5002/api/auth/delete', {
+        const response = await axios.delete('http://localhost:5002/api/auth/delete', {
           data: { userId: user.id },
         });
 

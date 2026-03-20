@@ -12,7 +12,7 @@ const Feed = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://user-service:5001/api/users/posts');
+        const response = await axios.get('http://localhost:5001/api/users/posts');
         setPosts(response.data);
       } catch (error) {
         console.error(error);

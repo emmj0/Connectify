@@ -18,14 +18,14 @@ export const AuthProvider = ({ children }) => {
   });
 
   const login = async (email, password) => {
-    const res = await axios.post('http://auth-service:5002/api/auth/login', { email, password });
+    const res = await axios.post('http://localhost:5002/api/auth/login', { email, password });
     localStorage.setItem('token', res.data.token);
     localStorage.setItem('user', JSON.stringify(res.data.user));
     setUser(res.data.user);
   };
 
   const register = async (name, username, email, password) => {
-    await axios.post('http://auth-service:5002/api/auth/register', { name, username, email, password });
+    await axios.post('http://localhost:5002/api/auth/register', { name, username, email, password });
   };
 
   const logout = () => {
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
       // Try register
       try {
-        await axios.post('http://auth-service:5002/api/auth/register', userData);
+        await axios.post('http://localhost:5002/api/auth/register', userData);
       } catch (err) {
         if (!(err.response && err.response.status === 409)) {
           throw err;
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Login
-      const loginRes = await axios.post('http://auth-service:5002/api/auth/login', {
+      const loginRes = await axios.post('http://localhost:5002/api/auth/login', {
         email: userData.email,
         password: userData.password,
       });

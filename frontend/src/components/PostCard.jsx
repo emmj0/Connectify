@@ -34,8 +34,8 @@ const PostCard = ({ post, key, onPostUpdated, userhe }) => {
     const handleLike = async () => {
         try {
             const endpoint = isLiked
-                ? `http://user-service:5001/api/users/${userId}/posts/${post._id}/unlike`
-                : `http://user-service:5001/api/users/${userId}/posts/${post._id}/like`;
+                ? `http://localhost:5001/api/users/${userId}/posts/${post._id}/unlike`
+                : `http://localhost:5001/api/users/${userId}/posts/${post._id}/like`;
 
             await axios.post(endpoint);
             setIsLiked(!isLiked);
@@ -50,7 +50,7 @@ const PostCard = ({ post, key, onPostUpdated, userhe }) => {
         if (!commentText.trim()) return;
 
         try {
-            const response = await axios.post(`http://user-service:5001/api/users/${userId}/posts/${post._id}/comment`, {
+            const response = await axios.post(`http://localhost:5001/api/users/${userId}/posts/${post._id}/comment`, {
                 text: commentText,
                 username: user.username,
             });
@@ -73,7 +73,7 @@ const PostCard = ({ post, key, onPostUpdated, userhe }) => {
         if (!window.confirm('Are you sure you want to delete this post?')) return;
 
         try {
-            await axios.delete(`http://user-service:5001/api/users/${userId}/posts/${post._id}/delete`);
+            await axios.delete(`http://localhost:5001/api/users/${userId}/posts/${post._id}/delete`);
             onPostUpdated();
         } catch (err) {
             console.error('Failed to delete post:', err);
@@ -82,7 +82,7 @@ const PostCard = ({ post, key, onPostUpdated, userhe }) => {
 
     const handleUpdate = async () => {
         try {
-            await axios.put(`http://user-service:5001/api/users/${userId}/posts/${post._id}/update`, {
+            await axios.put(`http://localhost:5001/api/users/${userId}/posts/${post._id}/update`, {
                 description: updatedDescription,
             });
             setIsEditing(false);
@@ -98,8 +98,8 @@ const PostCard = ({ post, key, onPostUpdated, userhe }) => {
                 <img
                     src={
                         post.user?.profilePicture
-                            ? `http://user-service:5001/${post.user.profilePicture}`
-                            : `http://user-service:5001/${userhe?.profilePicture}`
+                            ? `http://localhost:5001/${post.user.profilePicture}`
+                            : `http://localhost:5001/${userhe?.profilePicture}`
                     }
                     alt="Profile"
                     className="w-12 h-12 rounded-full object-cover"
@@ -112,7 +112,7 @@ const PostCard = ({ post, key, onPostUpdated, userhe }) => {
 
             {post.media && (
                 <img
-                    src={`http://user-service:5001/${post.media}`}
+                    src={`http://localhost:5001/${post.media}`}
                     alt={post.title || 'Post Image'}
                     className="w-full h-80 object-cover rounded-xl mb-4"
                 />
